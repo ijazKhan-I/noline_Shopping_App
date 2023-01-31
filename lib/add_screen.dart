@@ -1,14 +1,10 @@
 import 'dart:convert';
-import 'dart:math';
-import 'dart:typed_data';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:onlineshoppinapp/db_screen.dart';
 import 'package:onlineshoppinapp/product_model_screen.dart';
-import 'package:onlineshoppinapp/test_db.dart';
-import 'package:onlineshoppinapp/test_model.dart';
-import 'image_model.dart';
-import 'image_db.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class AddScreen extends StatefulWidget {
@@ -69,7 +65,17 @@ class _AddScreenState extends State<AddScreen> {
 
     return base64Image;
   }
+  Future<String> pickImageCamera() async {
+    var image = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 45);
 
+    var imageBytes = await image!.readAsBytes();
+
+    print("IMAGE PICKED: ${image.path}");
+
+    String base64Image = base64Encode(imageBytes);
+
+    return base64Image;
+  }
 
   String? byte64String;
 
@@ -87,27 +93,66 @@ class _AddScreenState extends State<AddScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              InkWell(
-                onTap: () async {
-                  //here call image picker
-                  byte64String = await pickImage();
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                   InkWell(
+                     onTap: () async {
+                       byte64String= await pickImageCamera();
+                     },
+                     child: Container(
+                       width: 70,
+                       height: 70,
+                       decoration: BoxDecoration(
 
-                },
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color:Colors.white,
-                    shape: BoxShape.rectangle,
-                    border: Border.all(color: Colors.grey,width: 2)
-                  ),
-                  child: Image.memory(base64Decode(byte64String!)),
-                       // child: image!.isEmpty? Image.memory(
-                       //     const Base64Decoder().convert(byte64String!)) : Text(
-                       //     "No Profile"),
+                         color:Colors.white,
+                         borderRadius: const BorderRadius.only(
+                             topLeft: Radius.circular(10),
+                             topRight: Radius.circular(10),
+                             bottomLeft: Radius.circular(10),
+                             bottomRight: Radius.circular(10)),
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.grey.withOpacity(0.5),
+                             spreadRadius: 5,
+                             blurRadius: 7,
+                             offset: const Offset(0, 3), // changes position of shadow
+                           ),
+                         ],
+                       ),
+                       child: Image.asset("assets/cam.png"),
+                     ),
+                   ),
+                   const SizedBox(width: 15,),
+                   InkWell(
+                     onTap: () async {
+                       byte64String= await pickImage();
+                     },
+                     child: Container(
+                       width: 70,
+                       height: 70,
+                       decoration: BoxDecoration(
 
-                ),
-              ),
+                         color:Colors.white,
+                         borderRadius: const BorderRadius.only(
+                             topLeft: Radius.circular(10),
+                             topRight: Radius.circular(10),
+                             bottomLeft: Radius.circular(10),
+                             bottomRight: Radius.circular(10)),
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.grey.withOpacity(0.5),
+                             spreadRadius: 5,
+                             blurRadius: 7,
+                             offset: const Offset(0, 3), // changes position of shadow
+                           ),
+                         ],
+                       ),
+                       child: Image.asset("assets/gallary.png"),
+                     ),
+                   ),
+                 ],
+               ),
                  SizedBox(height: 20,),
               SizedBox(
                 width: MediaQuery.of(context).devicePixelRatio*155,
@@ -179,25 +224,22 @@ class _AddScreenState extends State<AddScreen> {
               ),
               ElevatedButton(onPressed: () async{
                 if(formkey.currentState!.validate()){
-                  picture="okkk";
                  price=dropdownValue;
-                 TestModel model=TestModel(title: title, description: description, price: price, image: byte64String);
-                 var insert=await Helper.instance.Insert(model);
-                 await DatabaseHelper2.insertProfile(ProfileModel(title:title,description: description,price: price,image64bit: byte64String).toMap());
+                // TestModel model=TestModel(title: title, description: description, price: price, image: byte64String);
+                // var insert=await Helper.instance.Insert(model);
+                 //await DatabaseHelper2.insertProfile(ProfileModel(title:title,description: description,price: price,image64bit: byte64String).toMap());
                  
                  ProductModle productM=ProductModle(title: title, description: description, price: price, picture:byte64String );
                  var result= await  DatabaseHelper.instance.productInsert(productM);
                 //  var red=await DatabaseHelper.instance.productRead();
-                //  print(red);
+                 if(result>0){
+                Fluttertoast.showToast(msg: "Save");
+                 }
+                 else{
 
-                //  if(//result>0){
-                //
-                //  }
-                //  else{
-                //
-                //  }
-                //
-                // }else{
+                 }
+
+                }else{
                 }
               }, child: Text("Submit")),
             ],

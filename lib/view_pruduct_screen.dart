@@ -4,6 +4,7 @@ import 'package:onlineshoppinapp/product_model_screen.dart';
 import 'db_screen.dart';
 import 'image_db.dart';
 import 'image_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class ViewScreen extends StatefulWidget {
   const ViewScreen({Key? key}) : super(key: key);
 
@@ -43,19 +44,29 @@ var item=1;
                   itemBuilder: (context, index) {
                     ProductModle test = product[index];
                     return Card(
-
-
-                      color: Colors.green[400],
+                      elevation: 5,
                       child: ListTile(
-
                         iconColor: Colors.red,
-                        
-
                         trailing: IconButton(onPressed: () async {
-                         var del=await DatabaseHelper.instance.delete(test.id!);
-                          setState(() {
-
+                          return showDialog(barrierDismissible: false,
+                              context: context, builder: (context){
+                            return AlertDialog(
+                              title: const Text("Confirmation!"),
+                              content: const Text("are you sure to delete record?"),
+                              actions: [
+                                TextButton(onPressed: (){
+                                  Navigator.of(context).pop();
+                                }, child: const Text("No")),
+                                TextButton(onPressed: ()async{
+                                  Navigator.of(context).pop();
+                                  var del=await DatabaseHelper.instance.delete(test.id!);
+                                  Fluttertoast.showToast(msg: "Delete Record",backgroundColor: Colors.red);
+                                setState(() {});},
+                                    child: const Text("Yes")),
+                              ],
+                            );
                           });
+
 
                         }, icon: const Icon(Icons.delete)),
                         onTap: () {
@@ -82,12 +93,9 @@ var item=1;
                         },
                         title: Text("${test.title}"),
                         leading: Container(
-                          height: 60,
+                          height: 50,
                           width: 70,
                           decoration: BoxDecoration(
-                                 border: Border.all(color: Colors.green),
-
-
                           ),
                           child: product.isNotEmpty ? Image.memory(fit: BoxFit.fill,
                               const Base64Decoder().convert(
