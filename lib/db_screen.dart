@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart' ;
 import 'package:sqflite/sqflite.dart' ;
 
 
+import 'cart_model.dart';
 import 'model_screen.dart';
 
 class DatabaseHelper {
@@ -25,7 +26,8 @@ class DatabaseHelper {
     // to store database
 
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = '${directory.path}/AppNo.db';
+    String path = '${directory.path}/databaseM.db';
+    print(path);
 
     // open/ create database at a given path
     var studentsDatabase = await openDatabase(
@@ -33,10 +35,8 @@ class DatabaseHelper {
       version: 1,
       onCreate: _createDb,
     );
-
     return studentsDatabase;
   }
-
   void _createDb(Database db, int newVersion) async {
     await db.execute(
         '''CREATE TABLE Login (id integer primary key autoincrement,
@@ -44,7 +44,12 @@ class DatabaseHelper {
         )''');
     await  db.execute(
         '''CREATE TABLE AddP(id integer primary key autoincrement,
-         title text, description text, price text, picture text
+         title text, description text, price text, picture text,priceInt integer
+        )''');
+    await  db.execute(
+        '''CREATE TABLE AddToCart(id integer primary key autoincrement,
+             userID integer,productID integer,
+         FOREIGN key (userID) REFERENCES Login (id),FOREIGN key (productID) REFERENCES Addp (id)
         )''');
   }
 
@@ -53,7 +58,6 @@ class DatabaseHelper {
     int result = await db.insert("Login", obj.map());
     return result;
   }
-
 
   Future<List<Map<String, Object?>>> read() async {
     final Database db = await instance.database;
@@ -86,5 +90,31 @@ class DatabaseHelper {
     return await db.delete("AddP", where: "id=?", whereArgs: [id]);
   }
 
+  Future<int> insertCard(Add_To_Cart obj) async {
+    Database db = await instance.database;
+    int result = await db.insert("AddToCart", obj.map());
+    return result;
+  }
+  Future<List<Add_To_Cart>> ReadCart() async {
+    var Carts = <Add_To_Cart>[];
+
+    Database db = await instance.database;
+    var listMap = await db.rawQuery('''SELECT * FROM AddToCart
+    INNER JOIN Login on AddToCart.userID=Login.id
+    INNER JOIN AddP on AddToCart.productID=AddP.id
+    ''');
+
+    for (var cartMap in listMap) {
+      Add_To_Cart  cart= Add_To_Cart.fromMap(cartMap);
+      Carts.add(cart);
+    }
+
+
+    return Carts;
+  }
+  Future<int> deleteCart(var id) async {
+    Database db = await instance.database;
+    return await db.delete("AddToCart", where: "id=?", whereArgs: [id]);
+  }
   }
 

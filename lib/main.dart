@@ -1,15 +1,18 @@
 
 import 'package:flutter/material.dart';
-
+import 'package:onlineshoppinapp/variables.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   // This widget is the root of your application.
   @override

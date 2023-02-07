@@ -6,13 +6,19 @@ import 'package:onlineshoppinapp/view_user_product_screen.dart';
 import 'Reuseable_code.dart';
 import 'login_screen.dart';
 class UserScreen extends StatefulWidget {
-  const UserScreen({Key? key}) : super(key: key);
+    int newprefs;
+  UserScreen({required this.newprefs,Key? key}) : super(key: key);
 
   @override
-  State<UserScreen> createState() => _UserScreenState();
+  State<UserScreen> createState() => _UserScreenState(userid:newprefs);
 }
 
 class _UserScreenState extends State<UserScreen> {
+ int userid;
+
+ _UserScreenState({
+   required this.userid
+});
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +30,9 @@ class _UserScreenState extends State<UserScreen> {
           IconButton(onPressed: (){
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
           }, icon: Icon(Icons.logout)),
+          ElevatedButton(onPressed: (){
+            print(userid);
+          }, child: Text("print"))
         ],
 
       ),
@@ -37,7 +46,7 @@ class _UserScreenState extends State<UserScreen> {
               url: "assets/view.png",
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ViewUserProduct()));
+                    MaterialPageRoute(builder: (context) => ViewUserProduct(prefs:userid)));
               },
             ),
             const Box(height:0, width:15),

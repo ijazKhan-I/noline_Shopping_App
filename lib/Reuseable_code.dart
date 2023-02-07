@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class Tile extends StatelessWidget {
 
   final String text;
@@ -61,5 +61,32 @@ class Box extends StatelessWidget{
     );
   }
 
+
+}
+
+
+
+
+class notification{
+
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =FlutterLocalNotificationsPlugin();
+  final AndroidInitializationSettings _androidInitializationSettings=const AndroidInitializationSettings("@mipmap/notification");
+
+  void initilaization()async{
+
+    InitializationSettings _initializaionsetting=InitializationSettings(android: _androidInitializationSettings);
+
+    await _notificationsPlugin.initialize(_initializaionsetting);
+  }
+  void sendNotification(String title,String body) async{
+    AndroidNotificationDetails androidNotificationDetails=
+    const AndroidNotificationDetails("channelId", "channelName",importance: Importance.max,priority: Priority.high);
+    NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+    );
+    DateTime schedule=DateTime.now().add(const Duration(seconds: 6));
+    _notificationsPlugin.schedule(0, title, body,schedule, notificationDetails);
+
+  }
 
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:onlineshoppinapp/main.dart';
 import 'admin_screen.dart';
 import 'db_screen.dart';
 import 'user_screen.dart';
 import 'registeration_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -14,11 +16,22 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  
+  late SharedPreferences prefs;
+
+
   List<String> items=<String>[
     "Admin",
     "User"
   ];
+  @override
+ @override
+  void initState() {
 
+    super.initState();
+    prfss();
+  }
+late int sharId;
   late String logemail,logPassword;
 
   var emailcontroler= TextEditingController();
@@ -122,19 +135,25 @@ class _LoginState extends State<Login> {
                   if(Loginformkey.currentState!.validate()){
 
                     var data= await DatabaseHelper.instance.read();
-                    print(data);
+
 
                     for(var reads in data){
                       if(emailcontroler.text==reads["Email"]){
                         if(logPassword==reads["password"]){
                           if(reads["role"]==1){
-
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminScreen()));
-
                           }else{
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>UserScreen()));
+                            Object? userID = reads['id'];
+                            prefs.setInt("userID", userID as int);
+                            print("this");
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>UserScreen(newprefs:prefs.getInt("userID")!)));
 
-                          //  Fluttertoast.showToast(msg: "Login successfully!" );
+                            //print(reads["id"].runtimeType);
+                            Fluttertoast.showToast(msg: "Login successfully!" );
+
+
+
+
                           }
 
                         }
@@ -160,6 +179,11 @@ class _LoginState extends State<Login> {
 
       ),
     );
+
+  }
+  Future<void> prfss() async {
+
+    prefs = await SharedPreferences.getInstance();
 
   }
 

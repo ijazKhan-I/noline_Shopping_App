@@ -24,8 +24,10 @@ class _AddScreenState extends State<AddScreen> {
   var formkey=GlobalKey<FormState>();
   var titleController=TextEditingController();
   var descriptController=TextEditingController();
+  var priceintController=TextEditingController();
   late String title,description,price;
  late  String picture;
+ late int priceint;
   //
   // File? _image;
   // final _picker = ImagePicker();
@@ -196,6 +198,28 @@ class _AddScreenState extends State<AddScreen> {
                    ),
                  ),
               SizedBox(height: 20,),
+              SizedBox(
+                width: MediaQuery.of(context).devicePixelRatio*155,
+                height: MediaQuery.of(context).devicePixelRatio*22,
+                child: TextFormField(
+
+                  decoration: InputDecoration(
+                    hintText: "price",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).devicePixelRatio*6),
+                    )
+                  ),
+                  validator: (String? text){
+                    if(text==null||text.isEmpty){
+                      return "Enter price";
+                    }else{
+                      priceint=int.parse(text);
+                      return null;
+                    }
+                  },
+                ),
+              ),
+              SizedBox(height: 20,),
               Container(
                 padding: EdgeInsets.all(MediaQuery.of(context).devicePixelRatio*5),
                 width: MediaQuery.of(context).devicePixelRatio*155,
@@ -206,7 +230,6 @@ class _AddScreenState extends State<AddScreen> {
                 ),
                 //DropdownButton......
                 child: DropdownButton<String>(
-                  isExpanded: true,
                   onChanged: (String? newValue){
                     setState(() {
                       dropdownValue=newValue!;
@@ -229,7 +252,7 @@ class _AddScreenState extends State<AddScreen> {
                 // var insert=await Helper.instance.Insert(model);
                  //await DatabaseHelper2.insertProfile(ProfileModel(title:title,description: description,price: price,image64bit: byte64String).toMap());
                  
-                 ProductModle productM=ProductModle(title: title, description: description, price: price, picture:byte64String );
+                 ProductModle productM=ProductModle(title: title, description: description, price: price, picture:byte64String, priceInt: priceint );
                  var result= await  DatabaseHelper.instance.productInsert(productM);
                 //  var red=await DatabaseHelper.instance.productRead();
                  if(result>0){

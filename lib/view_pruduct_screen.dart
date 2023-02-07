@@ -76,7 +76,7 @@ var item=1;
 
                                 return AlertDialog(
 
-                                  content:Text("${test.title}\n\n${test.description}") ,
+                                  content:Text("${test.title}\n\n${test.description}\n\n${test.priceInt}${"   "}${test.price}") ,
                                  title: product.isNotEmpty?Image.memory(
                                      const Base64Decoder().convert(
                                          product[index].picture!)) : Text(
