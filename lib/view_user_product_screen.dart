@@ -55,10 +55,9 @@ class _ViewUserProductState extends State<ViewUserProduct> {
                    elevation: 5,
                      child: ListTile(
                      trailing: TextButton(onPressed: () async {
-
                    Add_To_Cart obj=Add_To_Cart(userID: prefsValue, productID: test.id!);
                    var result=await DatabaseHelper.instance.insertCard(obj);
-                   notifications.sendNotification("Notification!", "Ordered other product");
+                   notifications.sendNotification("Notification!", "${test.title} has been dispatched");
                      Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewCart(prefs: prefsValue,)));
 
 
@@ -67,7 +66,7 @@ class _ViewUserProductState extends State<ViewUserProduct> {
                      leading: Container(
                         height: 50,
                      width: 70,
-                   decoration: BoxDecoration(
+                   decoration:  BoxDecoration(
                         ),
                       child: product.isNotEmpty ? Image.memory(fit: BoxFit.fill,
                              const Base64Decoder().convert(

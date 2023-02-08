@@ -70,7 +70,7 @@ class Box extends StatelessWidget{
 class notification{
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin =FlutterLocalNotificationsPlugin();
-  final AndroidInitializationSettings _androidInitializationSettings=const AndroidInitializationSettings("@mipmap/notification");
+  final AndroidInitializationSettings _androidInitializationSettings=const AndroidInitializationSettings("notification");
 
   void initilaization()async{
 
@@ -84,7 +84,7 @@ class notification{
     NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
     );
-    DateTime schedule=DateTime.now().add(const Duration(seconds: 6));
+    DateTime schedule=DateTime.now().add(const Duration(minutes: 5));
     _notificationsPlugin.schedule(0, title, body,schedule, notificationDetails);
 
   }
